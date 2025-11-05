@@ -1,0 +1,20 @@
+---
+- name: Stop IBM HTTP Server on Windows
+  win_service:
+    name: "{{ ibm_http_service_name }}"
+    state: stopped
+
+- name: Wait for IBM HTTP Server to stop
+  pause:
+    seconds: "{{ ibm_http_restart_timeout }}"
+
+- name: Start IBM HTTP Server on Windows
+  win_service:
+    name: "{{ ibm_http_service_name }}"
+    state: started
+
+- name: Verify IBM HTTP Server is running
+  win_service:
+    name: "{{ ibm_http_service_name }}"
+  register: service_info
+  failed_when: service_info.state != "running"

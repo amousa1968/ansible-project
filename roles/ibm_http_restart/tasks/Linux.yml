@@ -1,0 +1,22 @@
+---
+- name: Stop IBM HTTP Server on Linux
+  service:
+    name: "{{ ibm_http_service_name }}"
+    state: stopped
+  become: true
+
+- name: Wait for IBM HTTP Server to stop
+  pause:
+    seconds: "{{ ibm_http_restart_timeout }}"
+
+- name: Start IBM HTTP Server on Linux
+  service:
+    name: "{{ ibm_http_service_name }}"
+    state: started
+  become: true
+
+- name: Verify IBM HTTP Server is running
+  command: systemctl is-active {{ ibm_http_service_name }}
+  register: service_status
+  failed_when: service_status.rc != 0
+  become: true

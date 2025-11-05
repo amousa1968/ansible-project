@@ -1,0 +1,3 @@
+---
+ibm_http_service_name: ibm-http-adminctl
+ibm_http_restart_timeout: 10
