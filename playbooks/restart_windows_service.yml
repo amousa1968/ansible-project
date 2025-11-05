@@ -1,0 +1,6 @@
+---
+- name: Restart Windows Service
+  hosts: windows_servers
+  gather_facts: true
+  roles:
+    - windows_service

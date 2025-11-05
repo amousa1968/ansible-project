@@ -1,0 +1,6 @@
+---
+- name: Restart WebSphere in Staging Environment
+  hosts: websphere_servers
+  gather_facts: true
+  roles:
+    - websphere_restart

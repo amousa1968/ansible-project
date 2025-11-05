@@ -1,0 +1,12 @@
+---
+- name: Stop WebSphere Application Server on Linux
+  service:
+    name: websphere
+    state: stopped
+  become: true
+
+- name: Start WebSphere Application Server on Linux
+  service:
+    name: websphere
+    state: started
+  become: true

@@ -1,0 +1,3 @@
+---
+was_service_name: websphere
+was_restart_timeout: 30

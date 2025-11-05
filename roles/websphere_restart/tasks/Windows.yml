@@ -1,0 +1,10 @@
+---
+- name: Stop WebSphere Application Server on Windows
+  win_service:
+    name: websphere
+    state: stopped
+
+- name: Start WebSphere Application Server on Windows
+  win_service:
+    name: websphere
+    state: started

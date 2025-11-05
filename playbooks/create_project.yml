@@ -1,0 +1,14 @@
+---
+- name: Create Ansible Project using Project Factory
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create new Ansible project
+      project_factory:
+        base_path: "/path/to/projects"
+        project_name: "{{ project_name }}"
+      register: project_result
+
+    - name: Display project creation result
+      debug:
+        msg: "{{ project_result.msg }}"

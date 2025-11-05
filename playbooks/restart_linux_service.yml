@@ -1,0 +1,6 @@
+---
+- name: Restart Linux Service
+  hosts: linux_servers
+  gather_facts: true
+  roles:
+    - linux_service

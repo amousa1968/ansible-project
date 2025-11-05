@@ -1,0 +1,6 @@
+---
+- name: Restart WebSphere Application Server
+  hosts: all
+  gather_facts: true
+  roles:
+    - was_restart
