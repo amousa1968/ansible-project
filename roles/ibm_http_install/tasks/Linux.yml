@@ -1,0 +1,34 @@
+---
+- name: Install IBM HTTP Server on Linux
+  block:
+    - name: Check if IBM HTTP Server is already installed
+      command: systemctl status ibm-http-adminctl
+      register: ibm_http_status
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install IBM HTTP Server package (placeholder - adjust for your package manager)
+      package:
+        name: "{{ ibm_http_package_name | default('ibm-http-server') }}"
+        state: present
+      when: ibm_http_status.rc != 0
+
+    - name: Enable IBM HTTP Server service
+      systemd:
+        name: ibm-http-adminctl
+        enabled: true
+        state: stopped
+      when: ibm_http_status.rc != 0
+
+    - name: Verify IBM HTTP Server installation
+      command: ibm-http-adminctl version
+      register: version_check
+      changed_when: false
+
+    - name: Display installation result
+      debug:
+        msg: "IBM HTTP Server installed successfully. Version: {{ version_check.stdout | default('Unknown') }}"
+  rescue:
+    - name: Installation failed
+      fail:
+        msg: "IBM HTTP Server installation failed on {{ ansible_hostname }}"

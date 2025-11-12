@@ -1,0 +1,34 @@
+---
+- name: Install IBM HTTP Server on Windows
+  block:
+    - name: Check if IBM HTTP Server service exists
+      win_service:
+        name: ibm-http-adminctl
+      register: ibm_http_service_check
+      ignore_errors: true
+
+    - name: Download IBM HTTP Server installer (placeholder - adjust URL)
+      win_get_url:
+        url: "{{ ibm_http_installer_url | default('https://example.com/ibm-http-server-installer.exe') }}"
+        dest: "{{ ibm_http_temp_dir | default('C:\\temp') }}\\ibm-http-server-installer.exe"
+      when: ibm_http_service_check.exists == false
+
+    - name: Install IBM HTTP Server silently
+      win_package:
+        path: "{{ ibm_http_temp_dir | default('C:\\temp') }}\\ibm-http-server-installer.exe"
+        arguments: "/S /D={{ ibm_http_install_dir | default('C:\\IBM\\HTTPServer') }}"
+        state: present
+      when: ibm_http_service_check.exists == false
+
+    - name: Verify IBM HTTP Server installation
+      win_command: ibm-http-adminctl version
+      register: version_check
+      changed_when: false
+
+    - name: Display installation result
+      debug:
+        msg: "IBM HTTP Server installed successfully on Windows. Version: {{ version_check.stdout | default('Unknown') }}"
+  rescue:
+    - name: Installation failed
+      fail:
+        msg: "IBM HTTP Server installation failed on {{ ansible_hostname }}"

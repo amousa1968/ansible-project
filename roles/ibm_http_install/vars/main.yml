@@ -1,0 +1,7 @@
+---
+# IBM HTTP Server installation variables
+ibm_http_service_name: ibm-http-adminctl
+ibm_http_package_name: ibm-http-server
+ibm_http_installer_url: https://example.com/ibm-http-server-installer.exe
+ibm_http_temp_dir: C:\temp
+ibm_http_install_dir: C:\IBM\HTTPServer

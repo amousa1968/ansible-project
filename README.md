@@ -8,7 +8,14 @@ This Ansible project provides automated solutions for restarting WebSphere Appli
 ├── playbooks/
 │   ├── restart_websphere.yml          # Main WebSphere restart playbook
 │   ├── restart_linux_service.yml      # Generic Linux service restart
-│   └── restart_windows_service.yml    # Generic Windows service restart
+│   ├── restart_windows_service.yml    # Generic Windows service restart
+│   ├── ibm-http-server-install.yml    # Install IBM HTTP Server
+│   ├── ibm-http-server-install-dev.yml    # Install IBM HTTP Server (Dev)
+│   ├── ibm-http-server-install-staging.yml # Install IBM HTTP Server (Staging)
+│   ├── ibm-http-server-install-prod.yml    # Install IBM HTTP Server (Prod)
+│   ├── ibm-http-server-start.yml       # Start IBM HTTP Server
+│   ├── ibm-http-server-stop.yml        # Stop IBM HTTP Server
+│   └── ibm-http-server-restart.yml     # Restart IBM HTTP Server
 ├── roles/
 │   ├── was_restart/                   # WebSphere Application Server restart role
 │   │   ├── tasks/
@@ -20,11 +27,15 @@ This Ansible project provides automated solutions for restarting WebSphere Appli
 │   │   │   └── main.yml
 │   │   └── defaults/
 │   │       └── main.yml
-│   └── windows_service/               # Generic Windows service management
-│       ├── tasks/
-│       │   └── main.yml
-│       └── defaults/
-│           └── main.yml
+│   ├── windows_service/               # Generic Windows service management
+│   │   ├── tasks/
+│   │   │   └── main.yml
+│   │   └── defaults/
+│   │       └── main.yml
+│   ├── ibm_http_install/              # IBM HTTP Server install role
+│   ├── ibm_http_start/                # IBM HTTP Server start role
+│   ├── ibm_http_stop/                 # IBM HTTP Server stop role
+│   └── ibm_http_restart/              # IBM HTTP Server restart role
 ├── environments/
 │   ├── dev/
 │   │   └── hosts.ini
@@ -47,17 +58,25 @@ Each environment inventory (`environments/{env}/hosts.ini`) contains:
 - `websphere_servers`: Hosts running WebSphere Application Server
 - `linux_servers`: Linux hosts for generic service management
 - `windows_servers`: Windows hosts for generic service management
+- `ibm_http_servers`: Hosts running IBM HTTP Server
 
 ## Playbooks
 
-### restart_websphere.yml
-Restarts WebSphere Application Server across all environments. Uses the `was_restart` role which automatically detects the operating system and applies appropriate restart procedures.
+### WebSphere Application Server
+- `restart_websphere.yml`: Restarts WebSphere Application Server across all environments
 
-### restart_linux_service.yml
-Generic playbook for restarting services on Linux servers using the `linux_service` role.
+### Generic Service Management
+- `restart_linux_service.yml`: Generic playbook for restarting services on Linux servers
+- `restart_windows_service.yml`: Generic playbook for restarting services on Windows servers
 
-### restart_windows_service.yml
-Generic playbook for restarting services on Windows servers using the `windows_service` role.
+### IBM HTTP Server Management
+- `ibm-http-server-install.yml`: Install IBM HTTP Server
+- `ibm-http-server-install-dev.yml`: Install IBM HTTP Server in development
+- `ibm-http-server-install-staging.yml`: Install IBM HTTP Server in staging
+- `ibm-http-server-install-prod.yml`: Install IBM HTTP Server in production
+- `ibm-http-server-start.yml`: Start IBM HTTP Server
+- `ibm-http-server-stop.yml`: Stop IBM HTTP Server
+- `ibm-http-server-restart.yml`: Restart IBM HTTP Server
 
 ## Roles
 
@@ -78,6 +97,17 @@ Generic playbook for restarting services on Windows servers using the `windows_s
 - **Variables**:
   - `service_name`: Name of the service to restart (default: websphere)
 
+### IBM HTTP Server Roles
+- `ibm_http_install`: Install IBM HTTP Server on Linux/Windows
+- `ibm_http_start`: Start IBM HTTP Server service
+- `ibm_http_stop`: Stop IBM HTTP Server service
+- `ibm_http_restart`: Restart IBM HTTP Server service
+
+**Common Variables for IBM HTTP Server roles**:
+- `ibm_http_service_name`: Service name (default: ibm-http-adminctl)
+- `ibm_http_port`: HTTP port (default: 80)
+- `ibm_http_timeout`: Timeout for operations (default: 30)
+
 ## Usage with Ansible Tower
 
 1. **Import Project**: Import this project into Ansible Tower/AWX
@@ -86,6 +116,7 @@ Generic playbook for restarting services on Windows servers using the `windows_s
    - Template for WebSphere restart using `restart_websphere.yml`
    - Template for Linux service restart using `restart_linux_service.yml`
    - Template for Windows service restart using `restart_windows_service.yml`
+   - Templates for IBM HTTP Server operations using respective playbooks
 4. **Set Variables**: Override default variables as needed for specific environments
 5. **Schedule/Execute**: Run manually or schedule automated restarts
 

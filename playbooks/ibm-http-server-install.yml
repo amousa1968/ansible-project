@@ -1,0 +1,6 @@
+---
+- name: Install IBM HTTP Server
+  hosts: all
+  gather_facts: yes
+  roles:
+    - ibm_http_install

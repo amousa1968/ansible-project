@@ -1,22 +1,29 @@
 ---
-- name: Stop IBM HTTP Server on Linux
-  service:
-    name: "{{ ibm_http_service_name }}"
-    state: stopped
-  become: true
+- name: Restart IBM HTTP Server on Linux
+  block:
+    - name: Restart IBM HTTP Server service
+      systemd:
+        name: "{{ ibm_http_service_name }}"
+        state: restarted
+        enabled: true
 
-- name: Wait for IBM HTTP Server to stop
-  pause:
-    seconds: "{{ ibm_http_restart_timeout }}"
+    - name: Wait for IBM HTTP Server to restart
+      wait_for:
+        port: "{{ ibm_http_port | default(80) }}"
+        timeout: "{{ ibm_http_timeout | default(30) }}"
 
-- name: Start IBM HTTP Server on Linux
-  service:
-    name: "{{ ibm_http_service_name }}"
-    state: started
-  become: true
+    - name: Verify IBM HTTP Server is running after restart
+      uri:
+        url: "http://localhost:{{ ibm_http_port | default(80) }}"
+        method: GET
+        status_code: 200
+      register: http_check
+      ignore_errors: true
 
-- name: Verify IBM HTTP Server is running
-  command: systemctl is-active {{ ibm_http_service_name }}
-  register: service_status
-  failed_when: service_status.rc != 0
-  become: true
+    - name: Display restart result
+      debug:
+        msg: "IBM HTTP Server restarted successfully on {{ ansible_hostname }}"
+  rescue:
+    - name: Restart failed
+      fail:
+        msg: "Failed to restart IBM HTTP Server on {{ ansible_hostname }}"

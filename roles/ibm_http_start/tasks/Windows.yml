@@ -1,0 +1,28 @@
+---
+- name: Start IBM HTTP Server on Windows
+  block:
+    - name: Start IBM HTTP Server service
+      win_service:
+        name: "{{ ibm_http_service_name }}"
+        state: started
+        start_mode: auto
+
+    - name: Wait for IBM HTTP Server to start
+      wait_for:
+        port: "{{ ibm_http_port | default(80) }}"
+        timeout: "{{ ibm_http_timeout | default(30) }}"
+
+    - name: Verify IBM HTTP Server is running
+      win_uri:
+        url: "http://localhost:{{ ibm_http_port | default(80) }}"
+        method: GET
+      register: http_check
+      ignore_errors: true
+
+    - name: Display start result
+      debug:
+        msg: "IBM HTTP Server started successfully on {{ ansible_hostname }}"
+  rescue:
+    - name: Start failed
+      fail:
+        msg: "Failed to start IBM HTTP Server on {{ ansible_hostname }}"

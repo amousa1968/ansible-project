@@ -1,0 +1,21 @@
+---
+- name: Stop IBM HTTP Server on Linux
+  block:
+    - name: Stop IBM HTTP Server service
+      systemd:
+        name: "{{ ibm_http_service_name }}"
+        state: stopped
+
+    - name: Verify IBM HTTP Server is stopped
+      wait_for:
+        port: "{{ ibm_http_port | default(80) }}"
+        state: absent
+        timeout: "{{ ibm_http_timeout | default(30) }}"
+
+    - name: Display stop result
+      debug:
+        msg: "IBM HTTP Server stopped successfully on {{ ansible_hostname }}"
+  rescue:
+    - name: Stop failed
+      fail:
+        msg: "Failed to stop IBM HTTP Server on {{ ansible_hostname }}"

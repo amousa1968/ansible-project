@@ -1,0 +1,6 @@
+---
+- name: Install IBM HTTP Server (Staging)
+  hosts: staging_servers
+  gather_facts: true
+  roles:
+    - ibm_http_install

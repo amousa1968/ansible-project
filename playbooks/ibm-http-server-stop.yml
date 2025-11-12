@@ -1,0 +1,6 @@
+---
+- name: Stop IBM HTTP Server
+  hosts: all
+  gather_facts: true
+  roles:
+    - ibm_http_stop

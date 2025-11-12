@@ -1,5 +1,5 @@
 ---
-# IBM HTTP Server restart variables
+# IBM HTTP Server start variables
 ibm_http_service_name: ibm-http-adminctl
 ibm_http_port: 80
 ibm_http_timeout: 30
